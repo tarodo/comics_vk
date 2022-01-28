@@ -113,10 +113,13 @@ if __name__ == "__main__":
     comics_id = get_ranadom_comics_id()
     comics = get_comics(comics_id)
     file_path = save_comics(comics["img"])
-
-    url_for_img = get_vk_upload_url(vk_access_token, vk_group_id)
-    img_vk_data = send_vk_img(url_for_img, file_path)
-    Path(file_path).unlink(missing_ok=True)
-    img_saved = save_vk_img(img_vk_data["server"], img_vk_data["photo"], img_vk_data["hash"], vk_access_token, vk_group_id)
-    post_id = post_comics_vk(comics["alt"], img_saved, vk_access_token, vk_group_id)
-    print(f"Comics '{comics['title']}' posted with ID :: {post_id}")
+    try:
+        url_for_img = get_vk_upload_url(vk_access_token, vk_group_id)
+        img_data = send_vk_img(url_for_img, file_path)
+        img_saved = save_vk_img(img_data["server"], img_data["photo"], img_data["hash"], vk_access_token, vk_group_id)
+        post_id = post_comics_vk(comics["alt"], img_saved, vk_access_token, vk_group_id)
+        print(f"Comics '{comics['title']}' posted with ID :: {post_id}")
+    except ValueError:
+        pass
+    finally:
+        Path(file_path).unlink(missing_ok=True)
