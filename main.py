@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 from pathlib import Path
@@ -6,6 +7,13 @@ from urllib.parse import unquote, urlparse
 
 import requests
 from dotenv import load_dotenv
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s :: %(levelname)s :: %(name)10s :: %(message)s",
+)
+log = logging.getLogger("comics")
+
 
 VK_API_URL = "https://api.vk.com/method"
 
@@ -125,8 +133,8 @@ if __name__ == "__main__":
         img_data = send_vk_img(url_for_img, file_path)
         img_saved = save_vk_img(img_data["server"], img_data["photo"], img_data["hash"], vk_access_token, vk_group_id)
         post_id = post_comics_vk(comics["alt"], img_saved, vk_access_token, vk_group_id)
-        print(f"Comics '{comics['title']}' posted with ID :: {post_id}")
+        log.info(f"Comics '{comics['title']}' posted with ID :: {post_id}")
     except (ValueError, requests.exceptions.HTTPError) as e:
-        print(e)
+        log.error(e)
     finally:
         Path(file_path).unlink(missing_ok=True)
