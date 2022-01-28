@@ -1,5 +1,5 @@
 # xkcd's comics VK bot
-Service to post random comics to your group at [vk.com](vk.com).
+Service to post random comics to your group at [vk.com](https://vk.com/feed).
 
 ## Install
 Python3 should be already installed. Then use pip (or pip3, if there is a conflict with Python2) to install dependencies:
