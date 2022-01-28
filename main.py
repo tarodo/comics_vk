@@ -30,7 +30,7 @@ def get_comics(comics_id: int) -> dict:
 def save_comics(img_url: str) -> str:
     file_path = urlparse(unquote(img_url)).path
     _, filename = os.path.split(file_path)
-    file_path = f"{filename}"
+    file_path = filename
 
     response = requests.get(img_url)
     response.raise_for_status()
