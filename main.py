@@ -50,8 +50,7 @@ def get_vk_upload_url(
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    img_vk = response.json()
-    return img_vk["response"]["upload_url"]
+    return response.json()["response"]["upload_url"]
 
 
 def send_vk_img(vk_url: str, file_path: str) -> dict:
