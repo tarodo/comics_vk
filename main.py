@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 VK_API_URL = "https://api.vk.com/method"
 
 
-def get_comics_id() -> int:
+def get_ranadom_comics_id() -> int:
     url = f"https://xkcd.com/info.0.json"
     response = requests.get(url)
     response.raise_for_status()
@@ -43,7 +43,7 @@ def delete_comics(file_path: str) -> None:
     Path(file_path).unlink(missing_ok=True)
 
 
-def get_vk_photo_url(
+def get_vk_upload_url(
     access_token: str, group_id: str, api_version: str = "5.131"
 ) -> str:
     url = f"{VK_API_URL}/photos.getWallUploadServer"
