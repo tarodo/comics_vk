@@ -60,15 +60,18 @@ def send_vk_img(vk_url: str, file_path: str) -> dict:
         }
         response = requests.post(vk_url, files=files)
     response.raise_for_status()
-
     return response.json()
 
 
 def save_vk_img(
-    photo_vk_data: dict, access_token: str, group_id: str, api_version: str = "5.131"
+    server, photo, vk_hash, access_token: str, group_id: str, api_version: str = "5.131"
 ) -> List:
     url = f"{VK_API_URL}/photos.saveWallPhoto"
-    params = photo_vk_data.copy()
+    params = {
+        "server": server,
+        "photo": photo,
+        "hash": vk_hash
+    }
     params.update(
         {
             "access_token": access_token,
@@ -114,6 +117,6 @@ if __name__ == "__main__":
     url_for_img = get_vk_upload_url(vk_access_token, vk_group_id)
     img_vk_data = send_vk_img(url_for_img, file_path)
     Path(file_path).unlink(missing_ok=True)
-    img_saved = save_vk_img(img_vk_data, vk_access_token, vk_group_id)
+    img_saved = save_vk_img(img_vk_data["server"], img_vk_data["photo"], img_vk_data["hash"], vk_access_token, vk_group_id)
     post_id = post_comics_vk(comics["alt"], img_saved, vk_access_token, vk_group_id)
     print(f"Comics '{comics['title']}' posted with ID :: {post_id}")
