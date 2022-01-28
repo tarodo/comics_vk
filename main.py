@@ -59,9 +59,9 @@ def send_vk_img(vk_url: str, file_path: str) -> dict:
             "photo": file,
         }
         response = requests.post(vk_url, files=files)
-        response.raise_for_status()
+    response.raise_for_status()
 
-        return response.json()
+    return response.json()
 
 
 def save_vk_img(
