@@ -39,6 +39,11 @@ def save_comics(img_url: str) -> str:
     return file_path
 
 
+def check_vk_response(response_data: dict):
+    if "error" in response_data:
+        raise requests.HTTPError(response_data["error"])
+
+
 def get_vk_upload_url(
     access_token: str, group_id: str, api_version: str = "5.131"
 ) -> str:
@@ -49,7 +54,8 @@ def get_vk_upload_url(
         "v": api_version,
     }
     response = requests.get(url, params=params)
-    response.raise_for_status()
+    vk_img_upload_data = response.json()
+    check_vk_response(vk_img_upload_data)
     return response.json()["response"]["upload_url"]
 
 
@@ -80,8 +86,9 @@ def save_vk_img(
         }
     )
     response = requests.get(url, params=params)
-    response.raise_for_status()
-    return response.json()["response"]
+    vk_img_data = response.json()
+    check_vk_response(vk_img_data)
+    return vk_img_data["response"]
 
 
 def post_comics_vk(
@@ -119,7 +126,7 @@ if __name__ == "__main__":
         img_saved = save_vk_img(img_data["server"], img_data["photo"], img_data["hash"], vk_access_token, vk_group_id)
         post_id = post_comics_vk(comics["alt"], img_saved, vk_access_token, vk_group_id)
         print(f"Comics '{comics['title']}' posted with ID :: {post_id}")
-    except ValueError:
-        pass
+    except (ValueError, requests.exceptions.HTTPError) as e:
+        print(e)
     finally:
         Path(file_path).unlink(missing_ok=True)
