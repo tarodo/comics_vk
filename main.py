@@ -39,10 +39,6 @@ def save_comics(img_url: str) -> str:
     return file_path
 
 
-def delete_comics(file_path: str) -> None:
-    Path(file_path).unlink(missing_ok=True)
-
-
 def get_vk_upload_url(
     access_token: str, group_id: str, api_version: str = "5.131"
 ) -> str:
@@ -112,13 +108,13 @@ if __name__ == "__main__":
     vk_access_token = os.getenv("VK_APP_TOKEN")
     vk_group_id = os.getenv("VK_GROUP_ID")
 
-    comics_id = get_comics_id()
+    comics_id = get_ranadom_comics_id()
     comics = get_comics(comics_id)
     file_path = save_comics(comics["img"])
 
-    url_for_img = get_vk_photo_url(vk_access_token, vk_group_id)
+    url_for_img = get_vk_upload_url(vk_access_token, vk_group_id)
     img_vk_data = send_vk_img(url_for_img, file_path)
-    delete_comics(file_path)
+    Path(file_path).unlink(missing_ok=True)
     img_saved = save_vk_img(img_vk_data, vk_access_token, vk_group_id)
     post_id = post_comics_vk(comics["alt"], img_saved, vk_access_token, vk_group_id)
     print(f"Comics '{comics['title']}' posted with ID :: {post_id}")
